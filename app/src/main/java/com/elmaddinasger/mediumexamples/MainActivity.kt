@@ -1,14 +1,21 @@
 package com.elmaddinasger.mediumexamples
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.elmaddinasger.mediumexamples.databinding.ActivityMainBinding
+import com.elmaddinasger.mediumexamples.retrofit.RetrofitRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -18,6 +25,24 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+        getProducts()
+
+    }
+
+    fun getProducts () {
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = RetrofitRepository.productApi.getProducts()
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    val nbProduct = response.body()
+                    nbProduct?.let { productList ->
+
+                        Log.e("PRODUCTS", productList.toString())
+
+                    }
+                }
+            }
         }
     }
 }
