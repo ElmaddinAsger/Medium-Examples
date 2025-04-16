@@ -10,6 +10,5 @@ object RetrofitRepository {
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-
     val productApi = retrofit.create(ProductServices::class.java)
 }
